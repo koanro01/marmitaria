@@ -1,0 +1,126 @@
+[
+    {
+        "nombre": "antonio",
+        "direccion": "rua tredfr 36",
+        "productos": [
+            {
+                "item": "File de frango Grelhado",
+                "cost": 18
+            },
+            {
+                "item": "File de frango Grelhado",
+                "cost": 18
+            },
+            {
+                "item": "File de frango Grelhado",
+                "cost": 18
+            },
+            {
+                "item": "Cocacola 600ml",
+                "cost": 8
+            },
+            {
+                "item": "Cocacola 600ml",
+                "cost": 8
+            }
+        ],
+        "telefono": "450365223",
+        "total": 70
+    },
+    {
+        "nombre": "aaron",
+        "direccion": "rua urbano caldeira 58",
+        "productos": [
+            {
+                "item": "Strogonoff de Frango",
+                "cost": 22
+            },
+            {
+                "item": "Cocacola 600ml",
+                "cost": 8
+            }
+        ],
+        "telefono": "45 656565",
+        "total": 30
+    },
+    {
+        "nombre": "angie",
+        "direccion": "rua rfrdgg",
+        "productos": [
+            {
+                "item": "Carne ao Molho",
+                "cost": 22
+            },
+            {
+                "item": "Carne ao Molho",
+                "cost": 22
+            },
+            {
+                "item": "Carne ao Molho",
+                "cost": 22
+            },
+            {
+                "item": "Cocacola 600ml",
+                "cost": 8
+            }
+        ],
+        "telefono": "42 78664456",
+        "total": 74
+    },
+    {
+        "nombre": "yuleyma",
+        "direccion": "rua urbano caldeira 58",
+        "productos": [
+            {
+                "item": "Strogonoff de Frango",
+                "cost": 18
+            },
+            {
+                "item": "Strogonoff de Frango",
+                "cost": 18
+            },
+            {
+                "item": "Cocacola de Lata",
+                "cost": 5
+            },
+            {
+                "item": "Cocacola de Lata",
+                "cost": 5
+            }
+        ],
+        "telefono": "45999210316",
+        "total": 46
+    },
+    {
+        "nombre": "cindy",
+        "direccion": "calle 8 ",
+        "productos": [
+            {
+                "item": "Bisteca Suina",
+                "cost": 22
+            },
+            {
+                "item": "Cocacola 600ml",
+                "cost": 8
+            }
+        ],
+        "telefono": "23456",
+        "total": 30
+    },
+    {
+        "nombre": "Cindy",
+        "direccion": "calle 8",
+        "productos": [
+            {
+                "item": "File de frango Grelhado",
+                "cost": 18
+            },
+            {
+                "item": "Guarana Lata",
+                "cost": 4
+            }
+        ],
+        "telefono": "12345",
+        "total": 22
+    }
+]
