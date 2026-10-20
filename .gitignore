@@ -1,1 +1,3 @@
-__pycache__/  *.db  marmitaria 
+__pycache__/
+*.db
+marmitaria/
