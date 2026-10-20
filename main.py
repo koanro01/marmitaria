@@ -1,10 +1,6 @@
 from database import (
     crear_banco,
-    guardar_pedido_db,
-    ver_pedidos_db,
     buscar_pedido_db,
-    ver_tabelas,
-    ver_itens_db,
     ver_historial_completo_db,
     caja_del_dia_db,
     editar_pedido_db,
@@ -14,7 +10,7 @@ from database import (
     repor_inventario_db
 )
 
-from inventario import inventario, ver_menu
+from inventario import ver_menu
 from services import nuevo_pedido
 
 def menu_principal(invent_pro):
@@ -31,13 +27,18 @@ def menu_principal(invent_pro):
         print("7. Caja del Dia:")
         print("8. Actualizar Inventario")
         print("9. Salir")
-        opcion=int(input("Seleccione una opcion: "))
+        try:
+            opcion = int(input("Seleccione una opcion: "))
+        except ValueError:
+            print("Introduzca un numero del 1 al 9")
+            continue
         
         if opcion == 1:
            nuevo_pedido(invent_pro)
            invent_pro = cargar_inventario_db()     
         elif opcion == 2:
-           ver_menu(invent_pro, "M") 
+           ver_menu(invent_pro, "M")
+           ver_menu(invent_pro, "B") 
         elif opcion == 3:
            ver_historial_completo_db()
         elif opcion == 4:
@@ -57,6 +58,8 @@ def menu_principal(invent_pro):
            invent_pro = cargar_inventario_db()
         elif opcion == 9:
            salir=True
+        else:
+           print("Opcion invalida, elija un numero del 1 al 9")
     return opcion
 
 crear_banco()
@@ -64,11 +67,3 @@ iniciar_inventario_db()
 invent_pro = cargar_inventario_db()
 
 menu_principal(invent_pro)
-
-print("===== TABLA PEDIDOS =====")
-ver_pedidos_db()
-
-print("===== TABLA ITENS_PEDIDO =====")
-ver_itens_db()
-
-ver_tabelas()

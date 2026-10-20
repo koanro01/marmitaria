@@ -33,12 +33,14 @@ def inventario ():
     
 def ver_menu(invent_pro, tipo):
     if tipo == "M":
-       productos = SABOR_MAR
+        productos = SABOR_MAR
+        titulo = "Menu de Marmitas"
     else:
-       productos = BEBIDA
+        productos = BEBIDAS
+        titulo = "Menu de Bebidas"
 
-    print("\n====== Menu del Dia ======")
-    print("Marmitas de:\n")
+    print(f"\n====== {titulo} ======")
+
     for i, llave in enumerate(productos.values(), start=1):
         valor = invent_pro[llave]
         if valor == 0:
