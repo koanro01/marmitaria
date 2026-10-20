@@ -1,12 +1,12 @@
 from models import Product
 from inventario import ver_menu, SABOR_MAR, BEBIDAS, MARMI_SIZE, PRECIO_BEB
 from entradas import pedir_entero_positivo
-
+from entradas import pedir_entero_positivo, pedir_si_no
 def cantidad_de_pedidos(invent_pro, conexao):
     cursor = conexao.cursor()
     pedido = []
-    op = "s"
-    while op.lower() == "s":
+    agregar_otro = True
+    while agregar_otro:
         while True:
             opcion = input(" Seleccione *M* para marmita o *B* para Bebidas: ").lower()
             if opcion == "m" or opcion == "b":
@@ -67,5 +67,5 @@ def cantidad_de_pedidos(invent_pro, conexao):
                 print(f"Stock Insuficiente solo hay {invent_pro[sab_beb]} de ese sabor")
         else :
             print("Opcion Invalida")     
-        op=input("Desea agregar otro Producto S/N: ").lower()
+        agregar_otro = pedir_si_no("Desea agregar otro Producto?")
     return pedido
