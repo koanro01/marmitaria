@@ -287,6 +287,7 @@ def editar_pedido_db(telefone_buscado):
                             tipo_entrega="Entrega"
                         else:
                             tipo_entrega= "Balcao"
+                            nueva_taxa_entrega=0.0
                             break
                         if tipo_entrega == "Entrega":
                             while True:
@@ -301,8 +302,15 @@ def editar_pedido_db(telefone_buscado):
                                 except ValueError:
                                     print("Introduzca un Valor Numerico")
                         break 
-                    cursor.execute("UPDATE pedidos SET tipo = ?, taxa_entrega=? WHERE id=?",
-                    (tipo_entrega,nueva_taxa_entrega,id_a_modificar,)
+                    cursor.execute("""
+                    SELECT SUM(cost)
+                    FROM itens_pedido
+                    WHERE pedido_id = ?
+                    """, (id_a_modificar,))
+                    subtotal = cursor.fetchone()[0]
+                    total_final = subtotal + nueva_taxa_entrega
+                    cursor.execute("UPDATE pedidos SET tipo = ?, taxa_entrega=?, total=? WHERE id=?",
+                    (tipo_entrega,nueva_taxa_entrega,total_final,id_a_modificar,)
                     )
                     lineas_afectadas = cursor.rowcount
                     conexao.commit()
