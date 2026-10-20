@@ -1,5 +1,6 @@
 from models import Product
 from inventario import ver_menu, SABOR_MAR, BEBIDAS, MARMI_SIZE, PRECIO_BEB
+from entradas import pedir_entero_positivo
 
 def cantidad_de_pedidos(invent_pro, conexao):
     cursor = conexao.cursor()
@@ -7,7 +8,7 @@ def cantidad_de_pedidos(invent_pro, conexao):
     op = "s"
     while op.lower() == "s":
         while True:
-            opcion = input(" Seleccione *M* para marmita o *B* para Bebidas").lower()
+            opcion = input(" Seleccione *M* para marmita o *B* para Bebidas: ").lower()
             if opcion == "m" or opcion == "b":
                 break
             else:
@@ -28,14 +29,7 @@ def cantidad_de_pedidos(invent_pro, conexao):
                     break
                 else:
                     print("Introduzca una opcion valida")
-            while True:
-                try:
-                    cantidad = int(input("cuantas marmitas de este tamanho y sabor: "))
-                    if cantidad > 0:
-                        break
-                    print("La cantidad debe ser mayor que cero.")
-                except ValueError:
-                    print("Introduce un número entero válido.")
+            cantidad = pedir_entero_positivo("cuantas marmitas de este tamanho y sabor: ")
             if invent_pro[sabor]>=cantidad:
                 invent_pro[sabor]-= cantidad
                 cursor.execute(
@@ -59,15 +53,7 @@ def cantidad_de_pedidos(invent_pro, conexao):
                         break
                     else:
                         print("Introduzca una opcion valida")
-            
-            while True:
-                try:
-                    canti_beb=int(input("Cuantas BEBIDAS de ese Sabor: "))
-                    if canti_beb > 0:
-                        break
-                    print("La cantidad debe ser mayor que cero.")
-                except ValueError:
-                    print("Introduce un número entero válido.")
+            canti_beb = pedir_entero_positivo("Cuantas BEBIDAS de ese Sabor: ")
             if invent_pro[sab_beb]>=canti_beb:
                 invent_pro[sab_beb]-= canti_beb
                 cursor.execute(
@@ -81,5 +67,5 @@ def cantidad_de_pedidos(invent_pro, conexao):
                 print(f"Stock Insuficiente solo hay {invent_pro[sab_beb]} de ese sabor")
         else :
             print("Opcion Invalida")     
-        op=input("Desea agregar otro Producto S/N").lower()
+        op=input("Desea agregar otro Producto S/N: ").lower()
     return pedido
