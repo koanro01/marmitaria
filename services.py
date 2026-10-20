@@ -1,6 +1,6 @@
 from models import Client, Pedido
 from pedidos import cantidad_de_pedidos
-from database import guardar_pedido_db
+from database import guardar_pedido_db, conectar
 import sqlite3
 
 def nuevo_pedido(invent_pro):
@@ -58,7 +58,7 @@ def nuevo_pedido(invent_pro):
      
 
    cliente = Client(nombre, telefono, direccion)
-   conexao = sqlite3.connect("marmitaria/marmitaria.db")
+   conexao = conectar()
    try:
        pedido = cantidad_de_pedidos(invent_pro, conexao)
        if len(pedido) == 0:

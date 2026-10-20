@@ -1,8 +1,15 @@
 from datetime import datetime
 import sqlite3
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "marmitaria.db")
+
+def conectar():
+    return sqlite3.connect(DB_PATH)
 
 def crear_banco():
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor()
 
     cursor.execute("""
@@ -54,7 +61,7 @@ def crear_banco():
     
 def iniciar_inventario_db():
     
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor() 
     
     cursor.execute("SELECT COUNT(*) FROM inventario;")
@@ -82,7 +89,7 @@ def iniciar_inventario_db():
         print("Inventario Ya Inicializado")
         
 def cargar_inventario_db():
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor()
     
     cursor.execute("SELECT producto, quantidade FROM inventario")
@@ -94,7 +101,7 @@ def cargar_inventario_db():
     return dict_inv  
         
 def repor_inventario_db():       
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor()
     cursor.execute("SELECT producto, quantidade FROM inventario")
     inventario_actual = cursor.fetchall()
@@ -153,7 +160,7 @@ def guardar_pedido_db(pedido_f, conexao):
     )
 
 def ver_pedidos_db():
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor()
 
     cursor.execute("SELECT * FROM pedidos")
@@ -166,7 +173,7 @@ def ver_pedidos_db():
         print(pedido)
 
 def buscar_pedido_db(telefone_buscado):
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor()
     
     cursor.execute("SELECT * FROM pedidos WHERE telefone = ?",
@@ -205,7 +212,7 @@ def buscar_pedido_db(telefone_buscado):
     
 def editar_pedido_db(telefone_buscado):
     from pedidos import cantidad_de_pedidos
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor()
     nueva_taxa_entrega=0.0
     try:
@@ -495,7 +502,7 @@ def editar_pedido_db(telefone_buscado):
     conexao.close()
     
 def cancelar_pedido_db(telefone_buscado):
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     try:
         with conexao:
             cursor = conexao.cursor()
@@ -567,7 +574,7 @@ def cancelar_pedido_db(telefone_buscado):
         conexao.close() 
     
 def ver_historial_db():
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     
     cursor = conexao.cursor()
     
@@ -595,7 +602,7 @@ def ver_historial_db():
         print(f"Total Vendido R$:{total_ventas}")
         
 def ver_tabelas():
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor()
 
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
@@ -607,7 +614,7 @@ def ver_tabelas():
     print(tabelas) 
     
 def ver_itens_db():
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor()
 
     cursor.execute("SELECT * FROM itens_pedido")
@@ -620,7 +627,7 @@ def ver_itens_db():
         print(item) 
         
 def ver_historial_completo_db():
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor()
 
     cursor.execute(
@@ -653,7 +660,7 @@ def ver_historial_completo_db():
 def caja_del_dia_db():
     agora = datetime.now()
     data = agora.strftime("%d/%m/%Y")
-    conexao = sqlite3.connect("marmitaria/marmitaria.db")
+    conexao = conectar()
     cursor = conexao.cursor()
     
     cursor.execute("""SELECT COUNT(*) FROM pedidos WHERE data = ?
@@ -727,6 +734,4 @@ def caja_del_dia_db():
         print(f"Total Dinheiro: {total_dinheiro}")
         print()
         print()
-        
-                    
         
