@@ -338,11 +338,15 @@ def editar_pedido_db(telefone_buscado):
                         FROM itens_pedido
                         WHERE pedido_id = ?
                     """, (id_a_modificar,))
-                    subtotal = cursor.fetchone()[0]
+                    subtotal = cursor.fetchone()[0] or 0
+                    if subtotal == 0:
+                        print("No se puede modificar la tasa: el pedido no tiene productos")
+                        continue
+
                     total_final = subtotal + nueva_taxa_entrega
                     cursor.execute(
-                    "UPDATE pedidos SET taxa_entrega = ?, total = ? WHERE id = ?",
-                    (nueva_taxa_entrega,total_final,id_a_modificar,)
+                        "UPDATE pedidos SET taxa_entrega = ?, total = ? WHERE id = ?",
+                        (nueva_taxa_entrega, total_final, id_a_modificar)
                     )
                     lineas_afectadas = cursor.rowcount
                     conexao.commit()
