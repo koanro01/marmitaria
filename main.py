@@ -1,6 +1,6 @@
 from database import (
     crear_banco,
-    buscar_pedido_db,
+    obtener_pedidos_por_telefono,
     ver_historial_completo_db,
     caja_del_dia_db,
     editar_pedido_db,
@@ -9,7 +9,7 @@ from database import (
     cargar_inventario_db,
     repor_inventario_db
 )
-
+from pantallas import mostrar_pedidos
 from inventario import ver_menu
 from services import nuevo_pedido
 
@@ -42,8 +42,8 @@ def menu_principal(invent_pro):
         elif opcion == 3:
            ver_historial_completo_db()
         elif opcion == 4:
-           telefone_buscado = input("Telefono del cliente: ")
-           buscar_pedido_db(telefone_buscado)
+            telefone_buscado = input("Telefono del cliente: ")
+            mostrar_pedidos(obtener_pedidos_por_telefono(telefone_buscado))
         elif opcion == 5:
            telefone_buscado = input("Telefono del cliente: ")
            editar_pedido_db(telefone_buscado)

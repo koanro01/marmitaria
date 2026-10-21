@@ -1,7 +1,7 @@
 from datetime import datetime
 import sqlite3
 import os
-
+from pantallas import mostrar_pedidos
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "marmitaria.db")
 
@@ -171,44 +171,15 @@ def ver_pedidos_db():
 
     for pedido in pedidos:
         print(pedido)
-
-def buscar_pedido_db(telefone_buscado):
+        
+def obtener_pedidos_por_telefono(telefono):
     conexao = conectar()
+    conexao.row_factory = sqlite3.Row
     cursor = conexao.cursor()
-    
-    cursor.execute("SELECT * FROM pedidos WHERE telefone = ?",
-    
-    (telefone_buscado,)
-    )
-    pedidos=cursor.fetchall()
-    
+    cursor.execute("SELECT * FROM pedidos WHERE telefone = ?", (telefono,))
+    filas = cursor.fetchall()
     conexao.close()
-    print ("===== PEDIDOS ENCONTRADOS =====")
-    for pedido in pedidos:
-        for i, ped in enumerate(pedido):
-            if i == 0:
-                print(f"Id: {ped}")
-            elif i == 1:
-                print(f"Nombre: {ped}")
-            elif i == 2:
-                print(f"Telefono: {ped}")
-            elif i == 3:
-                print(f"Direccion: {ped}")
-            elif i == 4:
-                print(f"Total: {ped}")
-            elif i == 5:
-                print(f"Fecha: {ped}")
-            elif i == 6:
-                print(f"Hora: {ped}")
-            elif i == 7:
-                print(f"Tipo: {ped}")
-            elif i == 8:
-                print(f"Taxa de Entrega: {ped}")
-            elif i == 9:
-                print(f"Forma de Pagamento: {ped}")
-                
-        print("-" * 30)
-    
+    return [dict(fila) for fila in filas]    
     
 def editar_pedido_db(telefone_buscado):
     from pedidos import cantidad_de_pedidos
@@ -217,7 +188,7 @@ def editar_pedido_db(telefone_buscado):
     nueva_taxa_entrega=0.0
     try:
 
-        buscar_pedido_db(telefone_buscado)
+        mostrar_pedidos(obtener_pedidos_por_telefono(telefone_buscado))
         id_a_modificar=int(input("Introduzca el Id del Pedido a Modificar:"))
         cursor.execute(" SELECT  id FROM pedidos WHERE id=? AND telefone=? ",
                        (id_a_modificar,telefone_buscado,))
