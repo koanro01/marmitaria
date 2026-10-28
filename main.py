@@ -51,6 +51,7 @@ def menu_principal(invent_pro):
         elif opcion == 6:
            telefone_buscado = input("Telefono del cliente: ")
            cancelar_pedido_db(telefone_buscado)
+           invent_pro = cargar_inventario_db()
         elif opcion == 7:
            caja_del_dia_db()
         elif opcion == 8:

@@ -2,6 +2,7 @@ from datetime import datetime
 import sqlite3
 import os
 from pantallas import mostrar_pedidos
+from entradas import pedir_entero_positivo
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "marmitaria.db")
 
@@ -487,7 +488,9 @@ def cancelar_pedido_db(telefone_buscado):
                 return
             for pedido in pedidos_encontrados:
                 print(pedido[0])
-            id_eli=int(input("Inroduzca el numero de ID a cancelar:"))
+
+            id_eli= pedir_entero_positivo("Inroduzca el numero de ID a cancelar:")
+
             if any(id_eli == pedido[0] for pedido in pedidos_encontrados):
                 cursor.execute(
                 """
@@ -539,7 +542,7 @@ def cancelar_pedido_db(telefone_buscado):
             else:
                 print(f"Se Ha Modificado: {pedido_eliminado} Pedido(s)")
             conexao.commit()
-    except sqlite3.Error as e:
+    except (sqlite3.Error, ValueError) as e:
         print(f"Se detectó un fallo: {e}")
     finally:    
         conexao.close() 
