@@ -7,11 +7,13 @@ from database import (
     cancelar_pedido_db,
     iniciar_inventario_db,
     cargar_inventario_db,
-    repor_inventario_db
+    repor_inventario_db,
+    listar_pedidos_db
 )
 from pantallas import mostrar_pedidos
 from inventario import ver_menu
 from services import nuevo_pedido
+from entradas import pedir_entero_positivo
 
 def menu_principal(invent_pro):
     
@@ -49,9 +51,15 @@ def menu_principal(invent_pro):
            editar_pedido_db(telefone_buscado)
            invent_pro = cargar_inventario_db()
         elif opcion == 6:
-           telefone_buscado = input("Telefono del cliente: ")
-           cancelar_pedido_db(telefone_buscado)
-           invent_pro = cargar_inventario_db()
+            pedidos_encontrados = listar_pedidos_db()
+            etiquetas = ["Id", "Nombre", "Telefono", "Total"]
+            for pedido in pedidos_encontrados:
+               for etiqueta, valor in zip(etiquetas, pedido):
+                  print(f"{etiqueta}: {valor}")
+               print("-" * 20)
+            id_pedido = pedir_entero_positivo("ID del pedido a cancelar: ")
+            cancelar_pedido_db(id_pedido)
+            invent_pro = cargar_inventario_db()
         elif opcion == 7:
            caja_del_dia_db()
         elif opcion == 8:

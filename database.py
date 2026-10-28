@@ -473,41 +473,32 @@ def editar_pedido_db(telefone_buscado):
     conexao.commit()
     conexao.close()
     
-def cancelar_pedido_db(telefone_buscado):
+def cancelar_pedido_db(id_pedido):
     conexao = conectar()
     try:
         with conexao:
             cursor = conexao.cursor()
-            cursor.execute("SELECT id FROM pedidos WHERE telefone = ? ",
-                (telefone_buscado,)         
+            cursor.execute("SELECT id FROM pedidos WHERE id = ? ",
+                (id_pedido,)         
                         
             )
-            pedidos_encontrados = cursor.fetchall()
+            pedidos_encontrados = cursor.fetchone()
             if not pedidos_encontrados:
-                print("No existen pedidos con ese teléfono.")
-                return
-            for pedido in pedidos_encontrados:
-                print(pedido[0])
+                raise ValueError("El pedido no existe")
 
-            id_eli= pedir_entero_positivo("Inroduzca el numero de ID a cancelar:")
-
-            if any(id_eli == pedido[0] for pedido in pedidos_encontrados):
-                cursor.execute(
+            cursor.execute(
                 """
                 SELECT item
                 FROM itens_pedido
                 WHERE pedido_id=?
                 """,
-                (id_eli,)
+                (id_pedido,)
                 )
-                productos_pedido = cursor.fetchall()
-            else:
-                print("Este id no pertenece a este pedido")
-                return
-            
+            productos_pedido = cursor.fetchall()
+
             if  not productos_pedido:
-                print("No hay productos asociados a este pedido.")
-                raise sqlite3.Error ("Deshaciendo los cambios")
+                raise ValueError("El pedido no tiene productos asociados")
+            
             for producto in productos_pedido:
                 cursor.execute("""UPDATE inventario
                 SET quantidade = quantidade + 1
@@ -523,11 +514,11 @@ def cancelar_pedido_db(telefone_buscado):
                     print(f"Se Ha Modificado: {invent_actulizado} Producto(s)")
             cursor.execute(
                 "DELETE FROM itens_pedido WHERE pedido_id = ?",
-                (id_eli,)   
+                (id_pedido,)   
             )
             produ_elim=cursor.rowcount
             cursor.execute("DELETE FROM pedidos WHERE id = ?",
-                (id_eli,)           
+                (id_pedido,)           
             )
             pedido_eliminado = cursor.rowcount
             if produ_elim == 0:
@@ -541,11 +532,25 @@ def cancelar_pedido_db(telefone_buscado):
                 raise sqlite3.Error ("Deshaciendo los cambios")
             else:
                 print(f"Se Ha Modificado: {pedido_eliminado} Pedido(s)")
-            conexao.commit()
     except (sqlite3.Error, ValueError) as e:
         print(f"Se detectó un fallo: {e}")
+        raise
     finally:    
         conexao.close() 
+        
+def listar_pedidos_db():
+    conexao = conectar()
+    try:
+        with conexao:
+            cursor = conexao.cursor()
+            cursor.execute("""
+                    SELECT id, nome, telefone, total
+                    FROM pedidos
+                """)
+            pedidos_encontrados = cursor.fetchall()
+            return pedidos_encontrados
+    finally:
+        conexao.close()
     
 def ver_historial_db():
     conexao = conectar()
