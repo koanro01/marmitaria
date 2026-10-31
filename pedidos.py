@@ -31,11 +31,13 @@ def cantidad_de_pedidos(invent_pro, conexao):
                     print("Introduzca una opcion valida")
             cantidad = pedir_entero_positivo("cuantas marmitas de este tamanho y sabor: ")
             if invent_pro[sabor]>=cantidad:
-                invent_pro[sabor]-= cantidad
                 cursor.execute(
-                 "UPDATE inventario SET quantidade = quantidade - ? WHERE producto = ?", 
-                  (cantidad,SABOR_MAR[marmi]),  
+                 "UPDATE inventario SET quantidade = quantidade - ? WHERE producto = ? AND quantidade >= ?", 
+                  (cantidad,SABOR_MAR[marmi],cantidad),  
                 )
+                if cursor.rowcount == 0:
+                    raise ValueError("Stock insuficiente o producto inexistente")
+                invent_pro[sabor]-= cantidad
                 for i in range(cantidad):
                     producto = Product(sabor, valor_u)
                     pedido.append(producto) 

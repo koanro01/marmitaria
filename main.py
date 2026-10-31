@@ -10,6 +10,7 @@ from database import (
     repor_inventario_db,
     listar_pedidos_db
 )
+import sqlite3
 from pantallas import mostrar_pedidos
 from inventario import ver_menu
 from services import nuevo_pedido
@@ -51,15 +52,21 @@ def menu_principal(invent_pro):
            editar_pedido_db(telefone_buscado)
            invent_pro = cargar_inventario_db()
         elif opcion == 6:
-            pedidos_encontrados = listar_pedidos_db()
-            etiquetas = ["Id", "Nombre", "Telefono", "Total"]
-            for pedido in pedidos_encontrados:
-               for etiqueta, valor in zip(etiquetas, pedido):
-                  print(f"{etiqueta}: {valor}")
-               print("-" * 20)
-            id_pedido = pedir_entero_positivo("ID del pedido a cancelar: ")
-            cancelar_pedido_db(id_pedido)
-            invent_pro = cargar_inventario_db()
+           try:
+               pedidos_encontrados = listar_pedidos_db()
+               if pedidos_encontrados:
+                  etiquetas = ["Id", "Nombre", "Telefono", "Total"]
+                  for pedido in pedidos_encontrados:
+                     for etiqueta, valor in zip(etiquetas, pedido):
+                        print(f"{etiqueta}: {valor}")
+                     print("-" * 20)
+                  id_pedido = pedir_entero_positivo("ID del pedido a cancelar: ")
+                  cancelar_pedido_db(id_pedido)
+                  invent_pro = cargar_inventario_db()
+               else :
+                  print("No hay pedidos para cancelar")
+           except (ValueError, sqlite3.Error) as e:
+               print(f"No se pudo cancelar el pedido: {e}")
         elif opcion == 7:
            caja_del_dia_db()
         elif opcion == 8:
