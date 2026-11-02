@@ -37,7 +37,6 @@ def cantidad_de_pedidos(invent_pro, conexao):
                 )
                 if cursor.rowcount == 0:
                     raise ValueError("Stock insuficiente o producto inexistente")
-                invent_pro[sabor]-= cantidad
                 for i in range(cantidad):
                     producto = Product(sabor, valor_u)
                     pedido.append(producto) 
@@ -56,18 +55,5 @@ def cantidad_de_pedidos(invent_pro, conexao):
                     else:
                         print("Introduzca una opcion valida")
             canti_beb = pedir_entero_positivo("Cuantas BEBIDAS de ese Sabor: ")
-            if invent_pro[sab_beb]>=canti_beb:
-                invent_pro[sab_beb]-= canti_beb
-                cursor.execute(
-                    "UPDATE inventario SET quantidade = quantidade -? WHERE producto = ?",
-                    (canti_beb,BEBIDAS[beb1]),
-                )
-                for i in range(canti_beb):
-                    producto=Product(sab_beb,pre_beb)
-                    pedido.append(producto) 
-            else:
-                print(f"Stock Insuficiente solo hay {invent_pro[sab_beb]} de ese sabor")
-        else :
-            print("Opcion Invalida")     
-        agregar_otro = pedir_si_no("Desea agregar otro Producto?")
+            
     return pedido
