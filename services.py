@@ -23,14 +23,18 @@ def nuevo_pedido(invent_pro):
    try:
        pedido = cantidad_de_pedidos(invent_pro, conexao)
        if len(pedido) == 0:
+           conexao.rollback()
            return
 
        pedido_f = Pedido(cliente, pedido, tipo_entrega, taxa_entrega, forma_pagamento)
        pedido_f.mostrar_pedido()
-
-       guardar_pedido_db(pedido_f, conexao)
-       conexao.commit()
-       pedido_guardado = True
+       if pedir_si_no("¿Confirmar pedido?"):
+           guardar_pedido_db(pedido_f, conexao)
+           conexao.commit()
+           pedido_guardado = True
+       else:
+           conexao.rollback()
+           return
    except (sqlite3.Error, ValueError) as e:
        conexao.rollback()
        print(f"No se pudo guardar el pedido: {e}")
