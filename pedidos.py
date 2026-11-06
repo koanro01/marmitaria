@@ -75,8 +75,14 @@ def cantidad_de_pedidos(invent_pro, conexao):
                     raise ValueError("El producto no existe.")
                 else:
                     print(f"Stock insuficiente solo hay {resultado_beb[1]} unidades.")
+                    continue
             else:
                 for i in range(canti_beb):
                     producto = Product(sab_beb, pre_beb)
                     pedido.append(producto)
+        if pedir_si_no("Desea agregar otro produto?"):
+            continue
+        else:
+            agregar_otro=False
     return pedido
+

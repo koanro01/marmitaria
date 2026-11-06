@@ -2,7 +2,7 @@ from datetime import datetime
 import sqlite3
 import os
 from pantallas import mostrar_pedidos
-from entradas import pedir_entero_positivo
+from entradas import pedir_entero_positivo, pedir_si_no
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "marmitaria.db")
 
@@ -220,7 +220,6 @@ def editar_pedido_db(telefone_buscado):
                     (nuevo_nome,id_a_modificar,)
                     )
                     lineas_afectadas = cursor.rowcount
-                    conexao.commit()
                     if lineas_afectadas == 0:
                         print("No Se Ha modificado")
                     else:
@@ -234,7 +233,6 @@ def editar_pedido_db(telefone_buscado):
                     (nuevo_telefone,id_a_modificar,)
                     )
                     lineas_afectadas = cursor.rowcount
-                    conexao.commit()
                     if lineas_afectadas == 0:
                         print("No Se Ha modificado")
                     else:
@@ -248,7 +246,6 @@ def editar_pedido_db(telefone_buscado):
                     (nueva_direccion,id_a_modificar,)
                     )
                     lineas_afectadas = cursor.rowcount
-                    conexao.commit()
                     if lineas_afectadas == 0:
                         print("No Se Ha modificado")
                     else:
@@ -292,7 +289,6 @@ def editar_pedido_db(telefone_buscado):
                     (tipo_entrega,nueva_taxa_entrega,total_final,id_a_modificar,)
                     )
                     lineas_afectadas = cursor.rowcount
-                    conexao.commit()
                     if lineas_afectadas == 0:
                         print("No Se Ha modificado")
                     else:
@@ -328,7 +324,6 @@ def editar_pedido_db(telefone_buscado):
                         (nueva_taxa_entrega, total_final, id_a_modificar)
                     )
                     lineas_afectadas = cursor.rowcount
-                    conexao.commit()
                     if lineas_afectadas == 0:
                         print("No Se Ha modificado")
                     else:
@@ -362,7 +357,6 @@ def editar_pedido_db(telefone_buscado):
                     (nueva_forma_de_pagamento,id_a_modificar,)
                     )
                     lineas_afectadas = cursor.rowcount
-                    conexao.commit()
                     if lineas_afectadas == 0:
                         print("No Se Ha modificado")
                     else:
@@ -412,7 +406,6 @@ def editar_pedido_db(telefone_buscado):
                        cursor.execute(
                        "UPDATE pedidos SET total = ? WHERE id = ?", 
                        (total_restantes,id_a_modificar,) )
-                       conexao.commit()
                        print(f"Éxito: Se guardaron {len(nuevos_productos)} productos en el pedido {id_a_modificar}.")
                     elif opci == "2":
                         pro_id_modi=input("Introduzca el Id del Producto a Quitar:")
@@ -441,10 +434,14 @@ def editar_pedido_db(telefone_buscado):
                                 cursor.execute(
                                 "UPDATE inventario SET quantidade = quantidade + ? WHERE producto = ?", 
                                 (1,producto_eliminar,) )
+                                if cursor.rowcount == 0:
+                                    raise sqlite3.Error("No se pudo devolver el producto al inventario")
                                 cursor.execute(
                                 "DELETE FROM itens_pedido WHERE id = ? AND pedido_id= ?",
                                 (pro_id_modi,id_a_modificar,)
                                 )
+                                if cursor.rowcount == 0:
+                                    raise sqlite3.Error("No se pudo eliminar el producto")
                                 cursor.execute(
                                 "SELECT SUM(cost) FROM itens_pedido WHERE pedido_id = ?",
                                 (id_a_modificar,)
@@ -456,22 +453,30 @@ def editar_pedido_db(telefone_buscado):
                                 WHERE id = ?
                                 """, (id_a_modificar,))
                                 taxa_entre_restante = cursor.fetchone()
+                                if taxa_entre_restante is None:
+                                    raise ValueError("No se encontró el pedido para obtener la tasa")
                                 subtotal_sum = sum_pro_restantes[0] or 0
                                 subtotal_taxa = taxa_entre_restante[0] or 0
                                 total_restantes = subtotal_sum + subtotal_taxa
                                 cursor.execute(
                                 "UPDATE pedidos SET total = ? WHERE id = ?", 
                                 (total_restantes,id_a_modificar,) )
-                                conexao.commit()
+                                if cursor.rowcount == 0:
+                                    raise sqlite3.Error("No se pudo actualizar el pedido")
                     elif opci == "3":
                         print("Saliendo")
-                        return
+                        break
                 elif op == "8":
-                    return                
-    except ValueError:
-        print("No hay Registros")
-    conexao.commit()
-    conexao.close()
+                    break 
+        if pedir_si_no("Desea confirmar los cambios"):
+            conexao.commit()
+        else:
+            conexao.rollback()               
+    except (sqlite3.Error,ValueError):
+        conexao.rollback()
+        print("No se pudo realizar la operación")
+    finally:
+        conexao.close()
     
 def cancelar_pedido_db(id_pedido):
     conexao = conectar()
